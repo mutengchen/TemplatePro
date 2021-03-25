@@ -1,0 +1,4 @@
+include ':component_util'
+include ':RoomData'
+include ':app'
+rootProject.name = "TemplatePro"
