@@ -27,7 +27,7 @@ ext{
     //versionCode(建议每次改动都去手动增加版本号，或者是利用svn版本号去做版本号的自增，因为app内会根据这个code来决定是否清除上一次的ip地址配置)
     appVersionCode = 25
     //当前版本号，版本号规则为 x.x.x，x是字母和数字随意组合
-    appVersionName="1.0.0"
+    appVersionName="1.1.0"
     //当前app的环境（QA为测试环境apk,PRO为正式环境apk）
 //    appEnv="QA"
     appEnv="PROD"

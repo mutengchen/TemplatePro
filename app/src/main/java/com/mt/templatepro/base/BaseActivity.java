@@ -12,7 +12,7 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setLayoutId();
+        setContentView(setLayoutId());
         //申请存储权限，这是app必备的权限，其他的动态去申请
         requestPermission();
     }
