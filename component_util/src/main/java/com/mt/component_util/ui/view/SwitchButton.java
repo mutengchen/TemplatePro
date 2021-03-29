@@ -1,5 +1,10 @@
 package com.mt.component_util.ui.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -9,6 +14,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.animation.AnimationSet;
 
 import com.google.gson.TypeAdapter;
 import com.mt.component_util.R;
@@ -28,9 +34,9 @@ public class SwitchButton extends View implements View.OnClickListener {
     int mStrokeRadius;
     float mSolidRadius;
     int ball_x_right;
-    int ball_x;
+    float ball_x;
     RectF rectF;
-
+    CheckListener checkListener;
 
     public SwitchButton(Context context) {
         this(context,null);
@@ -43,6 +49,9 @@ public class SwitchButton extends View implements View.OnClickListener {
     public SwitchButton(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SwitchButton);
+        bgColor = typedArray.getColor(R.styleable.SwitchButton_bg_color,Color.parseColor("#999999"));
+        ballColor = typedArray.getColor(R.styleable.SwitchButton_ball_color,Color.parseColor("#1AAC19"));
+        typedArray.recycle();
         initData();
     }
 
@@ -99,6 +108,8 @@ public class SwitchButton extends View implements View.OnClickListener {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawSwitchBg(canvas);
+        drawSwitchBall(canvas);
 
     }
     private void drawSwitchBall(Canvas canvas){
@@ -110,22 +121,87 @@ public class SwitchButton extends View implements View.OnClickListener {
 
     private void initData(){
         ballPaint = new Paint();
-        ballPaint.setColor(bgColor);
+        ballPaint.setColor(ballColor);
+        ballPaint.setAntiAlias(true);
         ballPaint.setStyle(Paint.Style.FILL);
 
         bgPaint = new Paint();
         bgPaint.setColor(bgColor);
+        bgPaint.setAntiAlias(true);
         bgPaint.setStyle(Paint.Style.FILL);
         setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        mCurrentState = (mCurrentState == State.CLOSE?State.OPEN:State.CLOSE);
+        if(mCurrentState ==State.CLOSE)
+            animate(ball_x_right,mStrokeRadius,Color.parseColor("#1AAc19"),Color.parseColor("#999999"));
+        else
+            animate(mStrokeRadius,ball_x_right,Color.parseColor("#999999"),Color.parseColor("#1AAc19"));
+
+        if(checkListener != null){
+            if(mCurrentState == State.OPEN){
+                checkListener.onCheckChanged(this,true);
+            }else
+                checkListener.onCheckChanged(this,false);
+        }
+
 
     }
+    private void animate(int from,int to,int startColor,int endColor){
+        ValueAnimator translate = ValueAnimator.ofFloat(from,to);
+        translate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                //动画执行完成之后，记录球停留的位置的x
+                ball_x = (float) valueAnimator.getAnimatedValue();
+                postInvalidate();
 
+            }
+        });
+        ValueAnimator color = ValueAnimator.ofObject(new TypeEvaluator() {
+            @Override
+            public Object evaluate(float v, Object o, Object t1) {
+                if(v==0)
+                    return o;
+                else
+                    return t1;
+            }
+        },startColor,endColor);
+        color.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                bgColor = (int) valueAnimator.getAnimatedValue();
+                bgPaint.setColor(bgColor);
+                postInvalidate();
+            }
+        });
+
+        //执行动画了
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(translate,color);
+        animatorSet.setDuration(200);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                setClickable(true);
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                setClickable(false);
+            }
+        });
+        animatorSet.start();
+    }
     private enum State{
         OPEN,CLOSE
     }
     private State mCurrentState;
+    public interface CheckListener{
+        void onCheckChanged(View view,boolean status);
+    }
 }

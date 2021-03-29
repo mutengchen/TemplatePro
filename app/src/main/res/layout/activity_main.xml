@@ -17,4 +17,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.mt.component_util.ui.view.ScaleSeekBar>
 
+
+    <com.mt.component_util.ui.view.SwitchButton
+        app:bg_color="@color/cardview_dark_background"
+        app:ball_color="@color/white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </com.mt.component_util.ui.view.SwitchButton>
+
 </LinearLayout>
