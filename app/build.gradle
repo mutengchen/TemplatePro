@@ -16,7 +16,6 @@ android {
         versionCode rootProject.ext.appVersionCode
         versionName rootProject.ext.appVersionName
         multiDexEnabled true
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -82,8 +81,8 @@ dependencies {
     // 加入AndroidAnnotations依赖,用于sharepreference的异步写入
     annotationProcessor 'org.androidannotations:androidannotations-api:4.1.0'
     implementation 'org.androidannotations:androidannotations-api:4.1.0'
-    implementation project(':component_util')
-
+    api project(':component_util')
+    api project(':camview')
     //导入retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     //Gson 库
