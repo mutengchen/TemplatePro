@@ -1,3 +1,4 @@
+include ':camview'
 include ':component_util'
 include ':RoomData'
 include ':app'

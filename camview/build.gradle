@@ -11,6 +11,7 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -34,11 +35,4 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    api 'com.google.code.gson:gson:2.6.2'
-    api 'com.alibaba:fastjson:1.2.55'
-    api 'pl.droidsonroids.gif:android-gif-drawable:1.2.1'
-    //viewpager指示器
-    implementation 'com.romandanylyk:pageindicatorview:1.0.3'
-
-
 }
